@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp"
+    android:orientation="vertical">
+
+
+    //new layout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+        //date
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="3dp"
+            android:background="@color/colorLightRed">
+
+            <TextView
+                android:id="@+id/text_rsvDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/text_rsvMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAR"
+                android:textColor="@color/colorMaroon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="3dp">
+            //row1
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_rsvRname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fiorillo's restaurant"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/text_rsvGenTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="Mar 12, 2016 15:24" />
+            </LinearLayout>
+
+            //row2
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Table for"
+                    android:textColor="@color/colorDarkGray" />
+
+                <TextView
+                    android:id="@+id/text_rsvParty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+
+                    android:text="2"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14dp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+
+                    android:text="at"
+                    android:textColor="@color/colorDarkGray" />
+
+                <TextView
+                    android:id="@+id/text_rsvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="21:00"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:text="for"
+
+                    android:textColor="@color/colorDarkGray" />
+
+                <TextView
+                    android:id="@+id/text_rsvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+
+                    android:text="Manroop Singh"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
+
+

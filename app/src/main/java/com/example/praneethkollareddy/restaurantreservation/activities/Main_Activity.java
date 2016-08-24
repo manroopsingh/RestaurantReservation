@@ -21,17 +21,12 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.praneethkollareddy.restaurantreservation.R;
-import com.example.praneethkollareddy.restaurantreservation.ResData;
 import com.example.praneethkollareddy.restaurantreservation.adapters.ResListAdapter;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -44,15 +39,18 @@ import com.google.android.gms.maps.model.LatLng;
 public class Main_Activity extends AppCompatActivity
         implements LocationListener, NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    public static String phone = "6508669800";
+
     private GoogleApiClient mGoogleApiClient;
     public static String Latitude = "37", Longitude = "-121";
     public static Location myLoc = new Location(LocationManager.NETWORK_PROVIDER);
     public static GoogleMap googleMap;
+    public static String rName, rWaittime;
 
-
+    public String res_key;
     ListView res_list;
     TextView res_name;
-    Firebase myFirebaseRef,refRestaurants;
+    Firebase myFirebaseRef, refRestaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +77,7 @@ public class Main_Activity extends AppCompatActivity
         }
 
         googleMap.setMyLocationEnabled(true);
+
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String bestProvider = locationManager.getBestProvider(criteria, true);
@@ -88,93 +87,66 @@ public class Main_Activity extends AppCompatActivity
         }
         locationManager.requestLocationUpdates(bestProvider, 20000, 0, this);
 
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(this)
-                        .addConnectionCallbacks(this)
-                        .addOnConnectionFailedListener(this)
-                        .addApi(LocationServices.API)
-                        .enableAutoManage(this, this)
-                        .build();
-            }
-
-
-            Firebase.setAndroidContext(this);
-            myFirebaseRef = new Firebase("https://resplendent-heat-2353.firebaseio.com");
-            refRestaurants = myFirebaseRef.child("Restaurants");
-
-            res_name = (TextView) findViewById(R.id.text_res_name);
-
-            refRestaurants.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        ResData post = postSnapshot.getValue(ResData.class);
-                        System.out.println(postSnapshot.getKey());
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-
-            res_list = (ListView) findViewById(R.id.res_list);
-
-            res_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    //get value from snapshot
-
-                    //get values from listview selected
-                    String name = ((TextView) findViewById(R.id.text_res_name)).getText().toString();
-                    String cuisine = ((TextView) findViewById(R.id.text_res_cuisine)).getText().toString();
-                    String dollar_range = ((TextView) findViewById(R.id.text_dollar_range)).getText().toString();
-                    RatingBar raiting = (RatingBar) findViewById(R.id.res_rating);
-                    String rting = String.valueOf(raiting.getRating());
-                    String waittime = ((Button) findViewById(R.id.btn_wait_time)).getText().toString();
-
-                    //pass values through intent
-                    Intent in = new Intent(getApplicationContext(), ActResDetails.class);
-                    in.putExtra("res_name", name);
-                    in.putExtra("res_cuisine", cuisine);
-                    in.putExtra("res_dollar_range", dollar_range);
-                    in.putExtra("res_rating", rting);
-                    in.putExtra("res_waittime", waittime);
-
-                    startActivity(in);
-
-
-                }
-            });
-
-            ResListAdapter adapter = new ResListAdapter(refRestaurants, this, R.layout.res_list);
-            res_list.setAdapter(adapter);
-
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
-
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-
-        Toast.makeText(getApplicationContext(),"Finding you current location...", Toast.LENGTH_LONG).show();
-
-
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .enableAutoManage(this, this)
+                    .build();
         }
 
-        @Override
-        public void onBackPressed () {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
+
+        Firebase.setAndroidContext(this);
+        myFirebaseRef = new Firebase("https://resplendent-heat-2353.firebaseio.com");
+        refRestaurants = myFirebaseRef.child("Restaurants");
+
+        //map elements from view
+        res_name = (TextView) findViewById(R.id.text_res_name);
+        res_list = (ListView) findViewById(R.id.res_list);
+
+        res_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                rName = ((TextView) view.findViewById(R.id.text_res_name)).getText().toString();
+                rWaittime = ((Button) view.findViewById(R.id.btn_wait_time)).getText().toString();
+
+                //pass values through intent
+                Intent in = new Intent(getApplicationContext(), ActResDetails.class);
+                in.putExtra("res_name", rName);
+                in.putExtra("waittime", rWaittime);
+                startActivity(in);
+
+
             }
+        });
+
+        ResListAdapter adapter = new ResListAdapter(refRestaurants, this, R.layout.res_list);
+        res_list.setAdapter(adapter);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Toast.makeText(getApplicationContext(), "Finding you current location...", Toast.LENGTH_LONG).show();
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
+    }
 
 
     @Override
@@ -213,16 +185,19 @@ public class Main_Activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_reserveTable) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_reservations) {
+        } else if (id == R.id.nav_writeReview) {
             Intent in = new Intent(getApplicationContext(), ActMyReservations.class);
             startActivity(in);
 
-        } else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_myReservations) {
+            Intent in = new Intent(getApplicationContext(), ActMyReservations.class);
+            startActivity(in);
 
+        } else if (id == R.id.nav_myAccount) {
+            Intent in = new Intent(getApplicationContext(), ActAccount.class);
+            startActivity(in);
 
         } else if (id == R.id.nav_share) {
 
@@ -274,7 +249,7 @@ public class Main_Activity extends AppCompatActivity
 //            Toast.makeText(getApplicationContext(), Latitude, Toast.LENGTH_LONG).show();
 //            Toast.makeText(getApplicationContext(), Longitude, Toast.LENGTH_LONG).show();
 
-        }
+    }
 
     @Override
     public void onLocationChanged(Location location) {
